@@ -1,30 +1,22 @@
-import usb.core
+import usb.core, time, os
 import usb.util
+import trainer
+while True:
+    dev = trainer.get_trainer()
+    if not dev:
+        print "Waiting for Tacx next 5s."
+        time.sleep(5)
+    else:
+        print "Found initializing"
+        trainer.initialise_trainer(dev)
+        break
 
-# find our device
-dev = usb.core.find(idVendor=0xfffe, idProduct=0x0001)
-print(dev)
-# was it found?
-if dev is None:
-    raise ValueError('Device not found')
-
-# set the active configuration. With no arguments, the first
-# configuration will be the active one
-dev.set_configuration()
-
-# get an endpoint instance
-cfg = dev.get_active_configuration()
-intf = cfg[(0,0)]
-
-ep = usb.util.find_descriptor(
-    intf,
-    # match the first OUT endpoint
-    custom_match = \
-    lambda e: \
-        usb.util.endpoint_direction(e.bEndpointAddress) == \
-        usb.util.ENDPOINT_OUT)
-
-assert ep is not None
-
-# write the data
-ep.write('test')
+while True:
+    trainer.send(dev, 0, 0)
+    time.sleep(0.3)
+    speed, pedecho, heart_rate, force_index, cadence = trainer.receive(dev)
+    if speed is None:
+        print "No output"
+        break
+    else:
+        print "SPEED: " + str(speed) + "\tPECHO: " + str(pedecho) + "\tHR: " + str(heart_rate) + "\tFORCE: " + str(force_index) + "\tCADENCE: " + str(cadence)
