@@ -1,5 +1,4 @@
-import usb.core, time, sys, signal
-import usb.util
+import time, sys
 import trainer
 
 def nice_exit():
