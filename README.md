@@ -9,3 +9,5 @@
 
 #### USB interface
 Tacx T1932 USB Interface for Fortius Multiplayer
+
+#### Implementation in GOLANG
